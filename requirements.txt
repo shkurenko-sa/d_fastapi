@@ -1,0 +1,9 @@
+fastapi==0.75.1
+uvicorn==0.17.6
+SQLAlchemy==1.4.34
+databases
+databases[asyncpg]
+psycopg-binary
+psycopg2
+asyncpg
+passlib
