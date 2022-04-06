@@ -1,0 +1,47 @@
+version: '3.9'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    command: sh -c "uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
+    volumes:
+      - ./:/app/
+    env_file:
+      - ./config/.env
+    ports:
+      - 8000:8000
+    networks:
+      - net
+  
+  nginx:
+    build: 
+      context: .
+      dockerfile: ./config/nginx/nginx.Dockerfile
+    depends_on:
+      - api
+    ports:
+      - 8080:8080
+    volumes:
+      - ./config/nginx/nginx.conf:/etc/nginx/conf.d/nginx.conf
+    networks:
+      - net
+
+  db:
+    image: postgres
+    restart: always
+    env_file:
+      - ./config/.env
+    ports:
+      - 5432:5432
+    volumes:
+      - db_data:/var/lib/postgresql/data/
+    networks:
+      - net
+
+networks:
+  net:
+
+volumes:
+  db_data:
